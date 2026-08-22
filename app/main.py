@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from app.routers import tarefa_router
-from app.database import engine
-from app.models.tarefa import Base 
+from app.database import engine, Base  # <-- Base vem direto do database
+from app.models.tarefa import Tarefa   # <-- Importamos para a Tarefa assinar a lista
+from app.models.usuario import Usuario # <-- Importamos para o Usuario assinar a lista
 
 app = FastAPI(title="TO DO list - minha primeira API em Python com FastAPI", version="1.0.0")
 
