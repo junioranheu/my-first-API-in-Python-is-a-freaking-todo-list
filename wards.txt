@@ -1,0 +1,15 @@
+# Setup Inicial e Ambiente Virtual
+cria a pasta do projeto e navega até ela
+python -m venv venv
+venv\Scripts\activate 
+pip install "fastapi[standard]" sqlalchemy alembic
+pip freeze > requirements.txt
+cria a estrutura inicial do app
+
+# Arquitetura Base (pasta app/)
+# main.py      -> Program.cs (Setup e ponto de entrada)
+# database.py  -> Setup do banco (DbContext)
+# models/      -> Entidades (EF Core)
+# schemas/     -> DTOs (Validação Pydantic)
+# routers/     -> Controllers (Endpoints)
+# services/    -> Regras de Negócio
