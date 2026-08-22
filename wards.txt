@@ -33,3 +33,19 @@
 - Path Parameters: Definidos com {} no decorator e tipados na função (ex: id: int).
 - HTTPException: Lançado para retornar erros HTTP (ex: raise HTTPException(status_code=404)).
 - HTTP 204: Definido no decorator status_code=status.HTTP_204_NO_CONTENT.
+
+########## Relacionamentos no SQLAlchemy (1 para N)
+- Lado N (Ex: Tarefa): Criar a coluna de chave estrangeira com `ForeignKey("tabela.id")`.
+- Lado N (Ex: Tarefa): Criar navegação com `relationship(back_populates="colecao_no_pai")`.
+- Lado 1 (Ex: Usuario): Criar navegação (lista) com `relationship(back_populates="nome_no_filho")`.
+- Nota: O `relationship` não vira coluna no banco, serve apenas para o Python navegar entre os objetos.
+
+########## Autenticação e Segurança (Hashing)
+- Bibliotecas: pip install "passlib[bcrypt]" pyjwt
+- Hashing (passlib): Usar CryptContext(schemes=["bcrypt"]) para gerar e verificar senhas.
+- Regra de Ouro Pydantic: O Schema de Resposta (Ex: UsuarioResponse) NUNCA deve conter a senha ou o hash, apenas dados públicos (id, email).
+
+########## Autenticação e JWT (Login)
+- Gerar Token: jwt.encode(payload, SECRET_KEY, algorithm="HS256") (requer pyjwt).
+- Endpoint Login: Usar OAuth2PasswordRequestForm no Depends() para conectar ao botão "Authorize" do Swagger.
+- Formato de Resposta: O endpoint de login deve retornar obrigatoriamente {"access_token": token, "token_type": "bearer"}.
