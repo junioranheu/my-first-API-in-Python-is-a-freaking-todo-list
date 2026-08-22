@@ -1,15 +1,66 @@
-# Setup Inicial e Ambiente Virtual
-cria a pasta do projeto e navega até ela
-python -m venv venv
-venv\Scripts\activate 
-pip install "fastapi[standard]" sqlalchemy alembic
-pip freeze > requirements.txt
-cria a estrutura inicial do app
+# FastAPI — Instalação, Execução e Swagger
 
-# Arquitetura Base (pasta app/)
-# main.py      -> Program.cs (Setup e ponto de entrada)
-# database.py  -> Setup do banco (DbContext)
-# models/      -> Entidades (EF Core)
-# schemas/     -> DTOs (Validação Pydantic)
-# routers/     -> Controllers (Endpoints)
-# services/    -> Regras de Negócio
+################################ Instalação
+
+Dentro da pasta do projeto, criar o ambiente virtual:
+
+```powershell
+python -m venv venv
+```
+
+Ativar o ambiente virtual:
+
+```powershell
+venv\Scripts\activate
+```
+
+Instalar as dependências:
+
+```powershell
+pip install "fastapi[standard]" sqlalchemy alembic
+```
+
+Gerar o arquivo com as dependências instaladas:
+
+```powershell
+pip freeze > requirements.txt
+```
+
+Para instalar novamente as dependências em outro ambiente:
+
+```powershell
+pip install -r requirements.txt
+```
+
+################ Executando a API
+
+Com o ambiente virtual ativo:
+
+```powershell
+python -m fastapi dev app/main.py
+```
+
+O FastAPI iniciará o servidor local, normalmente em:
+
+```text
+http://localhost:8000
+```
+
+################ Swagger
+
+O FastAPI gera automaticamente uma documentação interativa da API utilizando Swagger UI.
+
+Acessar:
+
+```text
+http://localhost:8000/docs
+```
+
+Nessa página é possível visualizar os endpoints, seus parâmetros e schemas, além de executar as requisições diretamente pelo navegador.
+
+################ URLs principais
+
+| Recurso      | URL                                  |
+| ------------ | ------------------------------------ |
+| API          | `http://localhost:8000`              |
+| Swagger UI   | `http://localhost:8000/docs`         |
