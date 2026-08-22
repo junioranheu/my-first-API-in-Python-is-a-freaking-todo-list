@@ -1,8 +1,8 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 class UsuarioCreate(BaseModel):
     email: str
-    senha: str
+    senha: str = Field(..., max_length=72) # Bloqueia senhas maiores que 72 caracteres
 
 class UsuarioResponse(BaseModel):
     id: int

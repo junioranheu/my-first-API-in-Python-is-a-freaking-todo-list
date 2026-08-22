@@ -49,3 +49,10 @@
 - Gerar Token: jwt.encode(payload, SECRET_KEY, algorithm="HS256") (requer pyjwt).
 - Endpoint Login: Usar OAuth2PasswordRequestForm no Depends() para conectar ao botão "Authorize" do Swagger.
 - Formato de Resposta: O endpoint de login deve retornar obrigatoriamente {"access_token": token, "token_type": "bearer"}.
+
+########## Validação Avançada Pydantic
+- Limites: Usar `Field(max_length=X, min_length=Y)` para evitar estouro de limite de banco ou criptografia (ex: Bcrypt suporta máx 72 caracteres).
+
+########## Tratamento Global de Erros
+- Padrão: Usar `@app.exception_handler(Exception)` no main.py.
+- Retorno: Usar `JSONResponse(status_code=500, content={"mensagem": "..."})` para padronizar saídas de erro interno.
