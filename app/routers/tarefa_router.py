@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -17,3 +17,18 @@ def listar_tarefas(db: Session = Depends(get_db)):
 @router.post("/", response_model=TarefaResponse, status_code=status.HTTP_201_CREATED)
 def criar_tarefa(tarefa: TarefaCreate, db: Session = Depends(get_db)):
     return TarefaService.criar(db, tarefa)
+
+@router.put("/{tarefa_id}", response_model=TarefaResponse)
+def atualizar_tarefa(tarefa_id: int, tarefa: TarefaCreate, db: Session = Depends(get_db)):
+    tarefa_atualizada = TarefaService.atualizar(db, tarefa_id, tarefa)
+    if not tarefa_atualizada:
+        # Equivalente ao return NotFound();
+        raise HTTPException(status_code=404, detail="Tarefa não encontrada")
+    return tarefa_atualizada
+
+@router.delete("/{tarefa_id}", status_code=status.HTTP_204_NO_CONTENT)
+def deletar_tarefa(tarefa_id: int, db: Session = Depends(get_db)):
+    sucesso = TarefaService.deletar(db, tarefa_id)
+    if not sucesso:
+        raise HTTPException(status_code=404, detail="Tarefa não encontrada")
+    return # Retorna 204 sem corpo
