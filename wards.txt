@@ -3,14 +3,14 @@
 - Ativar ambiente (Windows): venv\Scripts\activate
 - Instalar dependências: pip install "fastapi[standard]" sqlalchemy alembic
 - Gerar arquivo de dependências: pip freeze > requirements.txt
-- Instalar dependências de um projeto existente: pip install -r requirements.txt
+- Instalar dependências de projeto existente: pip install -r requirements.txt
 - Rodar a API (modo dev): fastapi dev app/main.py
 - Acessar Swagger UI: http://localhost:8000/docs
 
 ########## Schemas e Validação (Pydantic)
 - BaseModel: Classe base para criar DTOs.
 - Field(...): Adiciona regras de validação (ex: min_length). O `...` indica obrigatoriedade.
-- ConfigDict(from_attributes=True): Permite ler atributos da entidade ORM (similar ao AutoMapper).
+- ConfigDict(from_attributes=True): Permite ler atributos da entidade ORM.
 - Padrão: Criar SchemaBase e derivar Create/Update/Response para evitar overposting.
 
 ########## Injeção de Dependência e Rotas (FastAPI)
@@ -19,10 +19,9 @@
 - Decorators: Mapeiam verbos HTTP e parâmetros da URL (@router.get("/{id}")).
 - Registro: Usar app.include_router(nome_do_router) no main.py.
 
-########## Banco de Dados (SQLAlchemy)
-- Conexão SQLite: sqlite:///./banco.db
-- Conexão PostgreSQL: postgresql://usuario:senha@host:porta/banco
+########## Banco de Dados (SQLAlchemy e PostgreSQL)
 - Instalar driver Postgres: pip install psycopg2-binary
+- URL PostgreSQL: postgresql://usuario:senha@host:porta/banco
 - EnsureCreated: Base.metadata.create_all(bind=engine) no main.py.
 
 ########## Variáveis de Ambiente (.env)
@@ -33,4 +32,4 @@
 ########## Parâmetros de Rota e Tratamento de Erros
 - Path Parameters: Definidos com {} no decorator e tipados na função (ex: id: int).
 - HTTPException: Lançado para retornar erros HTTP (ex: raise HTTPException(status_code=404)).
-- HTTP 204: Definido no decorator status_code=status.HTTP_204_NO_CONTENT (útil para DELETE, retorna sem corpo).
+- HTTP 204: Definido no decorator status_code=status.HTTP_204_NO_CONTENT.
