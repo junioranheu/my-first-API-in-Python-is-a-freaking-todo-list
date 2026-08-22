@@ -1,12 +1,16 @@
 from fastapi import FastAPI
+from app.routers import tarefa_router
+from app.database import engine
+from app.models.tarefa import Base 
 
-# Equivalente ao builder.Build()
-app = FastAPI(
-    title="Minha API Python",
-    description="API com FastAPI, SQLAlchemy e Pydantic"
-)
+app = FastAPI(title="TO DO list - minha primeira API em Python com FastAPI", version="1.0.0")
 
-# Equivalente a um [HttpGet("health")] no Controller
+# Cria as tabelas no banco de dados (Equivalente ao EnsureCreated)
+Base.metadata.create_all(bind=engine)
+
+# Equivalente ao app.MapControllers()
+app.include_router(tarefa_router.router) 
+
 @app.get("/health")
 def health_check():
-    return {"status": "ok", "message": "API rodando perfeitamente!"}
+    return {"status": "ok"}

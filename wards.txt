@@ -64,3 +64,35 @@ Nessa página é possível visualizar os endpoints, seus parâmetros e schemas, 
 | ------------ | ------------------------------------ |
 | API          | `http://localhost:8000`              |
 | Swagger UI   | `http://localhost:8000/docs`         |
+
+################ Schemas e Validação Pydantic (app/schemas/tarefa.py)
+- BaseModel: Classe base para criar DTOs.
+- Field(...): Adiciona regras de validação (ex: min_length). O `...` indica obrigatoriedade.
+- ConfigDict(from_attributes=True): Age como o AutoMapper, lendo os atributos da entidade ORM.
+- Padrão: Criar um SchemaBase e derivar Schemas de Create/Update/Response para evitar overposting.
+
+################ Injeção de Dependência e Rotas
+- Dependências: Criamos funções com `yield` e usamos `Depends(funcao)` nos endpoints (Injeção Scoped).
+- Services: Classes com métodos estáticos ou injetados para isolar `db.add()`, `db.commit()`, `db.refresh()`.
+- APIRouter: O equivalente ao Controller. Usa decorators como `@router.get("/")` e agrupa endpoints com `prefix="/tarefas"`.
+- Registro: No `main.py`, usamos `app.include_router(nome_do_router)`.
+
+################ Mudando para PostgreSQL
+- Instalar driver: pip install psycopg2-binary
+- URL Padrão: postgresql://usuario:senha@host:porta/banco
+- Remover connect_args={"check_same_thread": False} do create_engine.
+
+################ Criando as tabelas automaticamente (EnsureCreated)
+- No main.py, importar o `engine` e o `Base` (que contém os models).
+- Executar: Base.metadata.create_all(bind=engine)
+- Nota: Para controle real de histórico (Migrations equivalentes ao EF), usa-se o Alembic.
+
+################ Variáveis de Ambiente e Segredos (.env)
+- Instalar pacote: pip install python-dotenv
+- Criar o arquivo `.env` na raiz do projeto e NÃO commitar (adicionar ao .gitignore).
+- Formato no .env: CHAVE=valor (ex: DATABASE_URL=postgresql://...)
+- Carregar no código Python:
+  import os
+  from dotenv import load_dotenv
+  load_dotenv() # Carrega o arquivo para a memória
+  variavel = os.getenv("DATABASE_URL")
