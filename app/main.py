@@ -5,6 +5,7 @@ from app.models.tarefa import Tarefa   # <-- Importamos para a Tarefa assinar a 
 from app.models.usuario import Usuario # <-- Importamos para o Usuario assinar a lista
 from app.routers import usuario_router
 from app.routers import auth_router
+from fastapi.responses import JSONResponse
 
 app = FastAPI(title="TO DO list - minha primeira API em Python com FastAPI", version="1.0.0")
 
