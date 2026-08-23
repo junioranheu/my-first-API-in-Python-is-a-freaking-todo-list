@@ -9,8 +9,11 @@ A simple Todo List API created to learn Python backend development.
 - Python
 - FastAPI
 - SQLAlchemy
+- Pydantic
 - Alembic
-- SQLite
+   PostgreSQL
+- JWT
+- bcrypt
 
 ## Running
 
