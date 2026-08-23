@@ -1,0 +1,342 @@
+# Criando uma API Python com FastAPI
+
+## 1. Criar o projeto
+
+```powershell
+mkdir minha-api
+cd minha-api
+```
+
+Criar e ativar o ambiente virtual:
+
+```powershell
+python -m venv venv
+venv\Scripts\activate
+```
+
+Instalar as dependências:
+
+```powershell
+pip install "fastapi[standard]" sqlalchemy alembic psycopg2-binary python-dotenv PyJWT bcrypt
+```
+
+Salvar as dependências:
+
+```powershell
+pip freeze > requirements.txt
+```
+
+Para instalar novamente:
+
+```powershell
+pip install -r requirements.txt
+```
+
+## 2. Estrutura
+
+```text
+minha-api/
+├── app/
+│   ├── main.py
+│   ├── database.py
+│   ├── security.py
+│   ├── models/
+│   ├── schemas/
+│   ├── routers/
+│   └── services/
+├── .env
+├── .gitignore
+└── requirements.txt
+```
+
+## 3. Criar a aplicação
+
+### `app/main.py`
+
+É o ponto de entrada da API.
+
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+```
+
+Executar:
+
+```powershell
+python -m fastapi dev app/main.py
+```
+
+API:
+
+```text
+http://localhost:8000
+```
+
+Swagger:
+
+```text
+http://localhost:8000/docs
+```
+
+ReDoc:
+
+```text
+http://localhost:8000/redoc
+```
+
+## 4. Configurar o banco
+
+### `app/database.py`
+
+Responsável por:
+
+* conexão com o banco;
+* `SessionLocal`;
+* `Base`;
+* `get_db()`.
+
+```python
+def get_db():
+    db = SessionLocal()
+
+    try:
+        yield db
+    finally:
+        db.close()
+```
+
+Nos routers:
+
+```python
+db: Session = Depends(get_db)
+```
+
+## 5. Criar Models
+
+Pasta:
+
+```text
+app/models/
+```
+
+Usar SQLAlchemy 2:
+
+```python
+class Tarefa(Base):
+    __tablename__ = "tarefas"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+```
+
+Model = tabela do banco.
+
+## 6. Criar Schemas
+
+Pasta:
+
+```text
+app/schemas/
+```
+
+Usar Pydantic:
+
+```python
+class TarefaCreate(BaseModel):
+    titulo: str
+    descricao: str | None = None
+```
+
+Schema = DTO + validação.
+
+## 7. Criar Services
+
+Pasta:
+
+```text
+app/services/
+```
+
+Service contém as regras e operações do banco.
+
+Exemplo:
+
+```python
+class TarefaService:
+
+    @staticmethod
+    def listar_todas(db: Session):
+        return db.query(Tarefa).all()
+```
+
+## 8. Criar Routers
+
+Pasta:
+
+```text
+app/routers/
+```
+
+Router = Controller.
+
+```python
+router = APIRouter(prefix="/tarefas")
+```
+
+Exemplo:
+
+```python
+@router.get("/")
+def listar(db: Session = Depends(get_db)):
+    return TarefaService.listar_todas(db)
+```
+
+Registrar no `main.py`:
+
+```python
+app.include_router(tarefa_router.router)
+```
+
+## 9. Migrations
+
+Inicializar o Alembic:
+
+```powershell
+alembic init alembic
+```
+
+Criar migration:
+
+```powershell
+alembic revision --autogenerate -m "create tarefas table"
+```
+
+Aplicar:
+
+```powershell
+alembic upgrade head
+```
+
+## 10. Autenticação
+
+### `app/security.py`
+
+Responsável por:
+
+* hash de senha com `bcrypt`;
+* criação de JWT;
+* validação do JWT;
+* Bearer Token.
+
+Fluxo:
+
+```text
+Login
+ ↓
+bcrypt
+ ↓
+JWT
+ ↓
+Bearer Token
+ ↓
+Depends()
+ ↓
+Endpoint protegido
+```
+
+## 11. Variáveis de ambiente
+
+Criar `.env`:
+
+```env
+DATABASE_URL=...
+SECRET_KEY=...
+```
+
+Nunca versionar:
+
+```text
+.env
+venv/
+__pycache__/
+```
+
+## 12. Fluxo da aplicação
+
+```text
+Request
+  ↓
+Router
+  ↓
+Schema / Pydantic
+  ↓
+Depends()
+  ↓
+Service
+  ↓
+SQLAlchemy
+  ↓
+Database
+  ↓
+Response Schema
+  ↓
+JSON
+```
+
+## 13. Comparação com .NET
+
+```text
+FastAPI       → ASP.NET Core
+APIRouter     → Controller
+Pydantic      → DTO / Validation
+SQLAlchemy    → Entity Framework
+Session       → DbContext
+Service       → Service
+Depends()     → Dependency Injection
+Alembic       → EF Core Migrations
+main.py       → Program.cs
+```
+
+## 14. Comandos principais
+
+Criar:
+
+```powershell
+python -m venv venv
+```
+
+Ativar:
+
+```powershell
+venv\Scripts\activate
+```
+
+Instalar:
+
+```powershell
+pip install "fastapi[standard]" sqlalchemy alembic psycopg2-binary python-dotenv PyJWT bcrypt
+```
+
+Salvar dependências:
+
+```powershell
+pip freeze > requirements.txt
+```
+
+Rodar:
+
+```powershell
+python -m fastapi dev app/main.py
+```
+
+Swagger:
+
+```text
+http://localhost:8000/docs
+```
+
+Desativar ambiente:
+
+```powershell
+deactivate
+```
