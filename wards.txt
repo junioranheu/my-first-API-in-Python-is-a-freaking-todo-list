@@ -41,9 +41,13 @@
 - Nota: O `relationship` não vira coluna no banco, serve apenas para o Python navegar entre os objetos.
 
 ########## Autenticação e Segurança (Hashing)
-- Bibliotecas: pip install "passlib[bcrypt]" pyjwt
-- Hashing (passlib): Usar CryptContext(schemes=["bcrypt"]) para gerar e verificar senhas.
-- Regra de Ouro Pydantic: O Schema de Resposta (Ex: UsuarioResponse) NUNCA deve conter a senha ou o hash, apenas dados públicos (id, email).
+- Bibliotecas recomendadas: pip install bcrypt pyjwt (Evitar passlib, está abandonada e gera bugs).
+- Hashing Direto (bcrypt): 
+  salt = bcrypt.gensalt()
+  hash_bytes = bcrypt.hashpw(senha.encode('utf-8'), salt)
+- Verificação: 
+  valido = bcrypt.checkpw(senha_digitada.encode('utf-8'), hash_banco.encode('utf-8'))
+- Regra de Ouro: Senhas precisam transitar em bytes (.encode('utf-8')) dentro do bcrypt e voltar para string (.decode('utf-8')) para salvar no banco.
 
 ########## Autenticação e JWT (Login)
 - Gerar Token: jwt.encode(payload, SECRET_KEY, algorithm="HS256") (requer pyjwt).
