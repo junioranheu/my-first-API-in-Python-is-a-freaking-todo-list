@@ -15,7 +15,7 @@ def listar_tarefas(
     usuario_id: int = Depends(obter_usuario_logado) # <-- Authorize
 ):
     return TarefaService.listar_todas(db)
-
+ 
 # POST: Retorna 201 Created em caso de sucesso
 @router.post("/", response_model=TarefaResponse, status_code=status.HTTP_201_CREATED)
 def criar_tarefa(
@@ -23,7 +23,7 @@ def criar_tarefa(
     db: Session = Depends(get_db), 
     usuario_id: int = Depends(obter_usuario_logado) # <-- Authorize
 ):
-    return TarefaService.criar(db, tarefa)
+    return TarefaService.criar(db, tarefa, usuario_id)
 
 @router.put("/{tarefa_id}", response_model=TarefaResponse)
 def atualizar_tarefa(
@@ -32,7 +32,7 @@ def atualizar_tarefa(
     db: Session = Depends(get_db),
     usuario_id: int = Depends(obter_usuario_logado) # <-- Authorize
 ):
-    tarefa_atualizada = TarefaService.atualizar(db, tarefa_id, tarefa)
+    tarefa_atualizada = TarefaService.atualizar(db, tarefa_id, tarefa, usuario_id)
     
     if not tarefa_atualizada:
         # Equivalente ao return NotFound();
